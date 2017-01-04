@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="tr">
+        <head>
+                <meta charset="utf-8">
+                <meta http-equiv="x-ua-compatible" content="ie=edge">
+                <title>Demor</title>
+                <meta name="description" content="">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <script type="text/javascript">
+var i = 0;
+console.log = function(msg){
+        document.getElementById('console').innerHTML += i + ": "+ msg + "<br>";
+        i++;
+}
+function demoCallback(response,err) {
+    if(err){
+        console.log(err);
+    }
+};
+                </script>
+                <script>
+(function(window,document,url, variable,async,first){
+        window['od_key'] = variable;
+        window[variable] = {
+                initTime: 1 * new Date().valueOf(),
+                newEvent: function(){
+                        (window[variable].q = window[variable.q] || []).push(arguments);
+                }
+        };
+        async = document.createElement('script');
+        first = document.getElementsByTagName('script')[0];
+        async.async = true;
+        async.type = "text/javascript";
+        async.src = url;
+        first.parentNode.insertBefore(async,first);
+})(window,document,'lib.v1.js','od');
+                </script>
+                <script>
+                    od.newEvent( [
+                            'InteractionEvent',
+                            {
+                                'Interactable': [
+                                    'ArticleLink',
+                                    {
+                                        'ArticleUUID': '5833f2519a28f618228b4568'
+                                    }
+                                ],
+                                'Interaction': [
+                                    'Click',
+                                    null
+                                ],
+                            }
+                        ]
+                    );
+                </script>
+        </head>
+        <body>
+                <div id="console"></div>
+        </body>
+</html>
