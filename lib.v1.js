@@ -25,7 +25,6 @@
     var ErrorHandler = function () {
         var lastIndicator = null;
         this.parse = function (error) {
-
             if (!error.hasOwnProperty('Explanation')) {
                 console.log("Explanation is not found in error body");
                 return 0;
@@ -41,7 +40,6 @@
                 this.parse(error.Explanation.Value.DecodeError);
             } else {
                 console.log("Hata " + lastIndicator + " kısmında. Beklenen değer: " + error.Explanation.Value.Expectation);
-                console.dir(error);
             }
 
         };
@@ -79,26 +77,20 @@
         if (typeof parameters != 'object' && parameters.length > 0) {
             console.log("Parameters must be json object");
         }
-        var eventType = parameters[0];
-        if (["Alive", "ContextKilled", "InteractionEvent", "ScrollEvent", "ReactionEvent", "AnswerEvent"].indexOf(eventType) === -1) {
-            console.log("First parameter must be one of this: Alive, ContextKilled, InteractionEvent,ScrollEvent,ReactionEvent,AnswerEvent ");
-        }
-
         var eventStorage = new Storage();
 
         var contextEventStorage = new Storage();
 
-        var DetailStorage = new Storage();
+        var DetailStorage = new Array();
 
         contextEventStorage.set('TimeOffsetMS', 1 * new Date().valueOf() - ref.initTime);
 
         contextEventStorage.set('ContextEventDetails',parameters)
 
-        DetailStorage.set('ContextEvent',contextEventStorage);
+        DetailStorage.push('ContextEvent',contextEventStorage);
 
         eventStorage.set('ContextUUID', this.UUID)
             .set('Details', DetailStorage);
-
 
         var contextRequestStorage = new Storage();
         contextRequestStorage.set('ContextRequest',eventStorage);
@@ -186,12 +178,9 @@
         for (var i = 0; i < queue.length; i++) {
             this.GenerateEvent.apply(this, queue[i]);
             this
-                .setCallback();
-            console.dir(this.getStorage());
-
-            this
+                .setCallback()
                 .send('/event');
-
+            console.log(" Beklemedeki event idsi "+i)
         }
     };
     ref.Init();
