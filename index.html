@@ -26,6 +26,9 @@
                 initTime: 1 * new Date().valueOf(),
                 newEvent: function () {
                     (window[variable].q = window[variable.q] || []).push(arguments);
+                },
+                setup: function () {
+                    window[variable].s = arguments;
                 }
             };
             async = document.createElement('script');
@@ -37,6 +40,15 @@
         })(window, document, 'lib.v1.js', 'od');
     </script>
     <script>
+        od.setup({
+                "UserUUID": "586ccdaef815f2dd351724c1",
+                "PageIndicator": {
+                    "Type":"ArticleUUID",
+                    "Value":"586ccdaef815f2dd351724c1",
+                }
+            }
+        );
+
         od.newEvent([
             "InteractionEvent", {
                 "Interactable": {

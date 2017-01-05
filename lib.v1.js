@@ -48,7 +48,7 @@
         var initStorage = new Storage();
         this.setStorage(initStorage)
             .setContextInfo()
-            .setCallback()
+            .setCallback('od.initCallback')
             .send('/init');
         ;
     };
@@ -61,7 +61,6 @@
         async.async = true;
         async.src = API_ROOT + endpoint + qs;
         first.parentNode.insertBefore(async, first);
-        console.dir(async.src);
     };
     ref.getStorage = function () {
         return this['storage'];
@@ -85,15 +84,15 @@
 
         contextEventStorage.set('TimeOffsetMS', 1 * new Date().valueOf() - ref.initTime);
 
-        contextEventStorage.set('ContextEventDetails',parameters)
+        contextEventStorage.set('ContextEventDetails', parameters)
 
-        DetailStorage.push('ContextEvent',contextEventStorage);
+        DetailStorage.push('ContextEvent', contextEventStorage);
 
         eventStorage.set('ContextUUID', this.UUID)
             .set('Details', DetailStorage);
 
         var contextRequestStorage = new Storage();
-        contextRequestStorage.set('ContextRequest',eventStorage);
+        contextRequestStorage.set('ContextRequest', eventStorage);
         this.setStorage(contextRequestStorage);
     };
     ref.setContextInfo = function () {
@@ -115,7 +114,7 @@
         return this;
     };
     ref.setCallback = function (callback) {
-        callback = callback || 'od.defaultInitCallback';
+        callback = callback || 'od.eventCallback';
         this.getStorage().set('Callback', callback);
         return this;
 
@@ -178,20 +177,39 @@
         for (var i = 0; i < queue.length; i++) {
             this.GenerateEvent.apply(this, queue[i]);
             this
-                .setCallback()
+                .setCallback('od.eventCallback')
                 .send('/event');
         }
-        this.q=[];
+        this.q = [];
     };
-    ref.newEvent = function(parameters){
+    ref.setup = function () {
+        if (this.hasOwnProperty('s')) {
+            var eventStorage = new Storage();
+
+            var DetailStorage = [];
+
+            DetailStorage.push('ContextDetails', this.s[0]);
+            eventStorage.set('ContextUUID', this.UUID)
+                .set('Details', DetailStorage);
+
+            var contextRequestStorage = new Storage();
+            contextRequestStorage.set('ContextRequest', eventStorage);
+            this.setStorage(contextRequestStorage);
+            console.dir(this.getStorage());
+            this
+                .setCallback('od.setupCallback')
+                .send('/event');
+        }
+    };
+    ref.newEvent = function (parameters) {
         this.GenerateEvent.apply(this, parameters);
         this
-            .setCallback()
+            .setCallback('od.eventCallback')
             .send('/event');
     };
     ref.Init();
 
-    ref.defaultInitCallback = function (response, error) {
+    ref.initCallback = function (response, error) {
         if (error) {
             var errorHandler = new ErrorHandler();
             errorHandler.parse(error);
@@ -199,5 +217,12 @@
             this.UUID = response;
             this.proceedQueue();
         }
+    };
+    ref.eventCallback = function(response,event){
+        this.setup();
+    };
+    ref.setupCallback = function (response, error) {
+        console.dir(error),
+        console.dir(response);
     }
 })(window);
