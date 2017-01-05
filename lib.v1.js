@@ -51,7 +51,6 @@
             .setCallback()
             .send('/init');
         ;
-        console.log(initStorage.serialize());
     };
     ref.UUID = null;
     ref.send = function (endpoint) {
@@ -62,6 +61,7 @@
         async.async = true;
         async.src = API_ROOT + endpoint + qs;
         first.parentNode.insertBefore(async, first);
+        console.dir(async.src);
     };
     ref.getStorage = function () {
         return this['storage'];
@@ -74,14 +74,14 @@
     };
 
     ref.GenerateEvent = function (parameters) {
-        if (typeof parameters != 'object' && parameters.length > 0) {
+        if (parameters.length < 1) {
             console.log("Parameters must be json object");
         }
         var eventStorage = new Storage();
 
         var contextEventStorage = new Storage();
 
-        var DetailStorage = new Array();
+        var DetailStorage = [];
 
         contextEventStorage.set('TimeOffsetMS', 1 * new Date().valueOf() - ref.initTime);
 
@@ -180,8 +180,14 @@
             this
                 .setCallback()
                 .send('/event');
-            console.log(" Beklemedeki event idsi "+i)
         }
+        this.q=[];
+    };
+    ref.newEvent = function(parameters){
+        this.GenerateEvent.apply(this, parameters);
+        this
+            .setCallback()
+            .send('/event');
     };
     ref.Init();
 
