@@ -24,12 +24,9 @@
             window['od_key'] = variable;
             window[variable] = {
                 initTime: 1 * new Date().valueOf(),
-                newEvent: function () {
-                    (window[variable].q = window[variable.q] || []).push(arguments);
+                send: function () {
+                    (window[variable].q = window[variable].q || []).push(arguments);
                 },
-                setup: function () {
-                    window[variable].s = arguments;
-                }
             };
             async = document.createElement('script');
             first = document.getElementsByTagName('script')[0];
@@ -40,16 +37,15 @@
         })(window, document, 'lib.v1.js', 'od');
     </script>
     <script>
-        od.setup({
+	od.send('detail',{
                 "UserUUID": "586ccdaef815f2dd351724c1",
                 "PageIndicator": {
                     "Type":"ArticleUUID",
                     "Value":"586ccdaef815f2dd351724c1",
                 }
             }
-        );
-
-        od.newEvent([
+);
+	od.send('event',[
             "InteractionEvent", {
                 "Interactable": {
                     "Type": "ArticleLink",
